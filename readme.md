@@ -17,8 +17,7 @@ npm install --save pug-dependencies
 ## Usage
 ```javascript
 var PugDependencies = require('pug-dependencies');
-var pugDependencies = new PugDependencies('path/to/pug/file.pug');
-var dependencies = pugDependencies.dependencies;
+var dependencies = new PugDependencies('relative/path/to/pug/file.pug');
 
 console.log(dependencies)
 // Returns an array of all dependent files: ["path1", "path2"]

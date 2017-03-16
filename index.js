@@ -9,26 +9,19 @@ var _         = require( 'lodash' ),
 var PugDependencies = ( function() {
   'use strict';
 
-  function PugDependencies( file, options ) {
-    this.options      = _.merge( this.DEFAULTS, options );
-    this.file         = path.join(this.options.basedir, file);
+  function PugDependencies( file ) {
+    this.file = file;
 
-
-    if ( fs.existsSync( this.file ) ) {
-      this.contents = fs.readFileSync(this.file, 'utf8');
-    } else {
-      console.log(this.file + ', doesn\'t exist or path is wrong');
-      return;
+    try {
+      fs.existsSync( this.file );
+    } catch (error) {
+      throw error;
     }
 
-    this.dependencies = this.getDependencies();
+    this.contents = fs.readFileSync(this.file, 'utf8');
 
-    return this;
+    return this.getDependencies();
   }
-
-  PugDependencies.prototype.DEFAULTS = {
-    basedir :         process.cwd()
-  };
 
   PugDependencies.prototype.getDependencies = function() {
     var _this         = this,
@@ -42,8 +35,9 @@ var PugDependencies = ( function() {
     var walk  = pugWalk( parse, function(node){
       if ( node.type === 'Include' || node.type === 'RawInclude' || node.type === 'Extends' ) {
         var pathToDependencie =path.join(dirname, node.file.path );
-        if ( _.indexOf( _this.dependencies, pathToDependencie ) === -1 )
-        dependencies.push(pathToDependencie);
+        if ( _.indexOf( _this.dependencies, node.file.path ) === -1 ){
+          dependencies.push(pathToDependencie);
+        }
       }
     });
     return dependencies;
