@@ -1,0 +1,31 @@
+{
+  "name": "pug-dependencies",
+  "version": "1.0.0",
+  "description": "Resolve dependencies of one pug file",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pure180/pug-dependencies.git"
+  },
+  "keywords": [
+    "pug",
+    "dependencies",
+    "include",
+    "extend"
+  ],
+  "author": "Daniel Pfisterer (info@daniel-pfisterer.de)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pure180/pug-dependencies/issues"
+  },
+  "homepage": "https://github.com/pure180/pug-dependencies#readme",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "pug-lexer": "^3.0.0",
+    "pug-parser": "^2.0.2",
+    "pug-walk": "^1.1.1"
+  }
+}
