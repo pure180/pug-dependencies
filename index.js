@@ -34,8 +34,8 @@ var PugDependencies = ( function() {
     var parse = pugParser( lex );
     var walk  = pugWalk( parse, function(node){
       if ( node.type === 'Include' || node.type === 'RawInclude' || node.type === 'Extends' ) {
-        var pathToDependencie =path.join(dirname, node.file.path );
-        if ( _.indexOf( _this.dependencies, node.file.path ) === -1 ){
+        var pathToDependencie = path.join(dirname, node.file.path );
+        if ( _.indexOf( dependencies, pathToDependencie ) === -1 ){
           dependencies.push(pathToDependencie);
         }
       }
