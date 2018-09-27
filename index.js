@@ -1,5 +1,4 @@
-var _         = require( 'lodash' ),
-    fs        = require( 'fs' ),
+var fs        = require( 'fs' ),
     path      = require( 'path' ),
     pugLexer  = require( 'pug-lexer' ),
     pugParser = require( 'pug-parser' ),
@@ -50,7 +49,7 @@ var PugDependencies = ( function() {
           pathToDependency = path.join(dirname, filePath);
         }
 
-        if ( _.indexOf( dependencies, pathToDependency ) === -1 ){
+        if ( dependencies.indexOf( pathToDependency ) === -1 ){
           dependencies.push(pathToDependency);
         }
       }

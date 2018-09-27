@@ -26,7 +26,6 @@
     "tape": "^4.9.1"
   },
   "dependencies": {
-    "lodash": "^4.17.11",
     "pug-lexer": "^4.0.0",
     "pug-parser": "^5.0.0",
     "pug-walk": "^1.1.7"
