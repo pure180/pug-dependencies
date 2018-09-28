@@ -1,6 +1,6 @@
 {
   "name": "pug-dependencies",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Resolve dependencies of one pug file",
   "main": "index.js",
   "scripts": {
