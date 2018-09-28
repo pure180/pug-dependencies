@@ -1,64 +1,40 @@
-var _         = require( 'lodash' ),
-    fs        = require( 'fs' ),
-    path      = require( 'path' ),
-    pugLexer  = require( 'pug-lexer' ),
-    pugParser = require( 'pug-parser' ),
-    pugWalk   = require( 'pug-walk' );
+const { readFileSync } = require('fs')
+const { dirname, isAbsolute, join, resolve } = require('path')
+const pugParser = require('pug-parser')
+const pugLexer = require('pug-lexer')
+const pugWalk = require('pug-walk')
 
+const DEPENDENCY_NODE_TYPES = ['Extends', 'Include', 'RawInclude']
 
-var PugDependencies = ( function() {
-  'use strict';
+module.exports = (file, options) => {
+  const contents = readFileSync(file, 'utf8')
+  const dependencies  = []
+  const dir = dirname(file)
+  const lex = pugLexer(contents, { filename: file })
+  const parsed = pugParser(lex)
 
-  function PugDependencies( file, options ) {
-    this.file = file;
-    this.options = options || {};
+  pugWalk(parsed, node => {
+    if (DEPENDENCY_NODE_TYPES.includes(node.type)) {
+      const filePath = node.file.path
+      let dependencyPath
 
-    try {
-      fs.existsSync( this.file );
-    } catch (error) {
-      throw error;
-    }
-
-    this.contents = fs.readFileSync(this.file, 'utf8');
-
-    return this.getDependencies();
-  }
-
-  PugDependencies.prototype.getDependencies = function() {
-    var _this         = this,
-        dependencies  = [],
-        basedir       = this.options.basedir,
-        dirname       = path.dirname( this.file ),
-        lex           = pugLexer( this.contents, {
-                        filename: this.file
-                      });
-
-    var parse = pugParser( lex );
-    var walk  = pugWalk( parse, function(node){
-      if ( node.type === 'Include' || node.type === 'RawInclude' || node.type === 'Extends' ) {
-        var filePath = node.file.path
-        var pathToDependency
-
-        if ( path.isAbsolute(filePath) ) {
-          if ( basedir ) {
-            pathToDependency = path.join(basedir, filePath);
-          } else {
-            // mimic pug when receiving an absolute path and basedir is not set
-            throw new Error('the "basedir" option is required to use includes and extends with "absolute" paths');
-          }
+      if (isAbsolute(filePath)) {
+        const { basedir } = options || {}
+        if (basedir) {
+          dependencyPath = join(basedir, filePath)
         } else {
-          pathToDependency = path.join(dirname, filePath);
+          // mimic pug when receiving an absolute path and basedir is not set
+          throw new Error('the "basedir" option is required to use includes and extends with "absolute" paths')
         }
-
-        if ( _.indexOf( dependencies, pathToDependency ) === -1 ){
-          dependencies.push(pathToDependency);
-        }
+      } else {
+        dependencyPath = resolve(dir, filePath)
       }
-    });
-    return dependencies;
-  };
 
-  return PugDependencies;
-})();
+      if (dependencies.indexOf(dependencyPath) === -1) {
+        dependencies.push(dependencyPath)
+      }
+    }
+  })
 
-module.exports = PugDependencies;
+  return dependencies
+}
